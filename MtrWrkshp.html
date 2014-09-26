@@ -1,0 +1,23 @@
+<head>
+  <title>MtrWrkshp</title>
+</head>
+
+<body>
+	<div class="container">
+	  <h1>Meteor Devshop videos</h1>
+	  <hr />
+	  {{> vids}}
+  	</div>
+</body>
+
+<template name="vids">
+  <ul class="list-group">
+  	{{#each videos}}
+  	<li class="list-group-item">
+  		<h4>{{title}}</h4>
+  		<span class="badge"><i>{{date}}</i></span>
+  		<a href="https://www.youtube.com/watch?v={{urlink}}">Watch video</a>
+  	</li>
+  	{{/each}}
+  </ul>
+</template>
