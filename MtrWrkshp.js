@@ -36,7 +36,7 @@ if (Meteor.isClient) {
   });
 
   function final() {
-    acc = _.flatten(acc);
+    acc = _.unique(_.flatten(acc));
     _.forEach(acc, function(itm) {
       var d = new Date(itm.snippet.publishedAt);
       if (itm && itm.snippet.title.toLowerCase().indexOf('devshop') > -1 && d.getFullYear() > 2000) {
@@ -61,7 +61,7 @@ if (Meteor.isClient) {
 
         callback(0);
 
-      }
+  }
     });
   }
 
@@ -81,7 +81,7 @@ if (Meteor.isServer) {
     // ensureIndex on the server side
     Vids._ensureIndex({ "title": 1}, {unique:true});
 
-    });
+  });
 
   Meteor.publish('vids', function() {
       return Vids.find();
