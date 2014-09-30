@@ -6,11 +6,12 @@
 	<div class="container">
 	  <h1>Meteor Devshop videos</h1>
 	  <hr />
-	  {{> vids}}
-  	</div>
+    {{> vids}}
+  </div>
 </body>
 
 <template name="vids">
+  {{#if videosLoaded}}
   <ul class="list-group">
   	{{#each videos}}
   	<li class="list-group-item">
@@ -20,4 +21,9 @@
   	</li>
   	{{/each}}
   </ul>
+  {{else}}
+  <div class="row"><div style="position: absolute;display: block;top: 50%;left: 50%;">
+    <img src="http://viewvc.svn.mozilla.org/vc/addons/trunk/bandwagon/skin/images/spinner.gif?revision=18591&view=co&pathrev=18591">
+  </div></div>
+  {{/if}}
 </template>

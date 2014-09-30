@@ -3,7 +3,17 @@ var Vids = new Meteor.Collection('videos');
 
 if (Meteor.isClient) {
 
+  Meteor.startup(function () {
+    Meteor.call('vidsLoaded', function (){
+      Session.set('loaded', true);
+    });
+  });
+
   Meteor.subscribe('vids');
+
+  Template.vids.videosLoaded = function () {
+    return Session.get('loaded');
+  };
 
   Template.vids.videos = function() {
     return Vids.find({}, {$sort:{rawd:-1}});
@@ -12,6 +22,9 @@ if (Meteor.isClient) {
 };
 
 if (Meteor.isServer) {
+
+  var self = this;
+  self.falsy = false;
   
   Meteor.startup(function () {
     Vids.remove({});
@@ -20,6 +33,7 @@ if (Meteor.isServer) {
     Vids._ensureIndex({ "title": 1}, {unique:true});
 
     function paginate(callback) {
+      if (self.falsy) return;
       var req = "https://www.googleapis.com/youtube/v3/search?key=$KEY&channelId=UC3fBiJrFFMhKlsWM46AsAYw&pageToken=" + n + "&part=snippet,id&order=date&maxResults=50";
       HTTP.get(req, function (error, result) {
         if (!error && result.statusCode === 200) {
@@ -34,6 +48,7 @@ if (Meteor.isServer) {
     }
 
     function final() {
+      self.falsy = true;
       acc = _.unique(_.flatten(acc));
       _.forEach(acc, function(itm) {
         var d = new Date(itm.snippet.publishedAt);
@@ -77,6 +92,8 @@ if (Meteor.isServer) {
         }
         series(arr.shift());
       }
+
+      return;
     });
 
   });
@@ -92,5 +109,12 @@ if (Meteor.isServer) {
       remove: function() {
           return true;
       }
+  });
+
+  Meteor.methods({
+    vidsLoaded: function(vars) {
+      // get data from remote API
+      return self.falsy;
+    }
   });
 }
